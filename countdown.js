@@ -28,45 +28,55 @@
 //     return iNum<10 ? "0"+iNum : iNum;
 // }
 
-function addZ(iNum){
-    return iNum<10 ? "0"+iNum : iNum;
-}
-
-function Countdown(elem, endTime){
-	this.elem = elem;
-	this.nowTime = new Date().getTime();
-	this.endTime = endTime.getTime();
-	this.timer = null;
-	this.init();
-}
-Countdown.prototype = {
-	constructor: Countdown,
-	init: function(){
-		var _this = this;
-		this.timer = setInterval(function(){
-			_this.run();
-		},1000)
-		
-	},
-	run: function(){
-		console.log(this.nowTime)
-		console.log(this.endTime)
-		var t = Math.floor((this.endTime - this.nowTime)/1000);
-		console.log(t)
-		var iD = Math.floor(Math.floor(t/86400));
-		var iH = Math.floor(t%86400/3600);
-		var iM = Math.floor((t%3600/60));
-		var iS = t%60;
-		if(t<=0){
-			clearInterval(this.timer);
-			document.getElementById(this.elem).innerHTML = '抢购完毕！';
-		}else{
-			document.getElementById(this.elem).innerHTML = "距离结束时间还有：" + iD + "天" + addZ(iH) + "小时" + addZ(iM) + "分" + addZ(iS) + "秒";
-		}
-
-		this.nowTime+=1000;
+(function(){
+	function Countdown(opts){
+		this.opts = extend({
+			elem: '',
+			start: new Date().getTime(),
+			end: new Date().getTime()
+		}, opts || {})
+		this.timer = null;
+		this.init();
 	}
-}
 
-var endTime = new Date(2018, 7 - 1, 5, 9, 0, 0);
-var test = new Countdown("countdown",endTime);  
+	Countdown.prototype = {
+		constructor: Countdown,
+		init: function(){
+			var _this = this;
+			this.timer = setInterval(function(){
+				_this.run();
+			},1000)
+		},
+		run: function(){
+			var opts = this.opts;
+			var t = Math.floor((opts.end - opts.start)/1000);
+			var iD = Math.floor(Math.floor(t/86400));
+			var iH = Math.floor(t%86400/3600);
+			var iM = Math.floor((t%3600/60));
+			var iS = t%60;
+			if(t<=0){
+				clearInterval(this.timer);
+				document.getElementById(opts.elem).innerHTML = '抢购完毕！';
+			}else{
+				document.getElementById(opts.elem).innerHTML = "距离结束时间还有：" + iD + "天" + addZ(iH) + "小时" + addZ(iM) + "分" + addZ(iS) + "秒";
+			}
+
+			opts.start+=1000;
+		}
+	}
+
+	function addZ(iNum){
+	    return iNum<10 ? "0"+iNum : iNum;
+	}
+
+	function extend(target, obj){
+		for(var k in obj){
+			if(obj.hasOwnProperty(k)){
+				target[k] = obj[k];
+			}
+		}
+		return target;
+	}
+
+	return window.Countdown = Countdown;
+})()

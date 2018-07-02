@@ -9,5 +9,13 @@
 <body>
 	<p id="countdown"></p>
 	<script src="countdown.js"></script>
+	<script>
+		var endTime = new Date(2018, 7 - 1, 5, 9, 0, 0);
+		// var test = new Countdown("countdown",endTime);  
+		var test = new Countdown({
+			elem: 'countdown',
+			end: endTime
+		});  
+	</script>
 </body>
 </html>
